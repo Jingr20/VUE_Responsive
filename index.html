@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue响应式原理模拟</title>
+</head>
+<body>
+    <div id="app">
+        <h1>插值表达值</h1>
+        <h3>{{msg}}</h3>
+        <h3>{{count}}</h3>
+
+        <h1>v-text</h1>
+        <div v-text="msg"></div>
+
+        <h1>v-model</h1>
+        <input type="text" v-model="msg">
+        <input type="text" v-model="count">
+
+    </div>
+
+    <script src="js/myDep.js"></script>
+    <script src="js/myWatcher.js"></script>
+    <script src="js/myCompiler.js"></script>
+    <script src="js/myObserver.js"></script>
+    <script src="js/myVue.js"></script>
+    <script>
+        let vm = new Vue({
+            el:"#app",
+            data:{
+                msg:"hello world",
+                count:100,
+                person:{
+                    name:'jr',
+                    age:18
+                }
+            }
+        });
+
+        // 思考：defineReactive中为什么要传递第三个参数value,而不是直接采用data[key]的形式访问
+        console.log(vm.msg);
+        // 访问vm.msg
+        // 1）先触发vm中的getter，访问data[key]
+        // 2）再触发observer中的getter，返回value
+        // 3）若defineReactive中不采用第三个参数value，而是直接采用data[key]，则会一直触发observer中的getter，形成死递归
+
+
+        // 修改msg中的字符串值为对象，此时该对象的所有属性也应为getter/setter
+        // vm.msg = {
+        //     text:'hello vue'
+        // };
+        // 修改vm.msg
+        // 1）触发Vue实例的setter
+        // 2）触发data里的getter，返回value（判断新旧值是否相等）
+        // 3）不相等继续执行Vue实例的setter（给属性赋新值）
+        // 4）触发data里的setter【在此处修改data的值】
+        // 5）返回到Vue实例的setter，执行完毕
+
+
+
+
+    </script>
+</body>
+</html>

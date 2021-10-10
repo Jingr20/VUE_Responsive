@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- <script src="js/vue.js"></script> -->
+</head>
+<body>
+    <!-- ************************* 实现功能：msg内容改变，div内容随之改变 ************************* -->
+    <div id="app">
+        hello
+    </div>
+
+    <script>
+        // 模拟Vue中的data选项
+        let data = {
+            msg:'hello',
+            count:0
+        }
+
+    
+        /*************************** Vue2.X 实现原理 ***************************/
+        // 基于Object.defineProperty
+
+        // // 模拟 Vue 实例
+        // let vm = {}
+
+        // //  *************************  单一属性举例
+        // // 数据劫持：当访问或者设置vm中的成员时，做一些干预操作（在内部进行DOM操作实现视图更新）
+        // // 给vm实例添加 伪属性msg，真正的数据还是存储在data中
+        // Object.defineProperty(vm,'msg',{
+        //     // 该对象为属性描述符
+
+        //     // 可枚举（可遍历）
+        //     enumerable:true,
+        //     // 可配置（可以使用delete删除，可以通过defineProperty重新定义）
+        //     configurable:true,
+        //     // 当获取值的时候执行
+        //     get:function(){
+        //         console.log('get: '+ data.msg);
+        //         return data.msg;
+        //     },
+        //     // 当设置值的时候执行
+        //     set:function(newValue){
+        //         console.log('set: ' + newValue);
+        //         if(newValue === data.msg){
+        //             return;
+        //         }
+        //         data.msg = newValue;
+        //         // 数据更改，更新DOM的值
+        //         document.getElementById('app').textContent = data.msg;
+        //     }
+
+        // });
+
+
+        // //  *************************  将data中的属性全部转化为getter/setter
+        // proxyData(data);
+
+        // function proxyData(){
+        //     // 遍历data对象的所有属性
+        //     Object.keys(data).forEach(key => {
+        //         // 把data中的属性，转换成 vm 的getter/setter
+        //         Object.defineProperty(vm,key,{
+        //             enumerable:true,
+        //             configurable:true,
+                
+        //             get:function(){
+        //                 console.log('get: '+ data[key]);
+        //                 return data[key];
+        //             },
+        //             set:function(newValue){
+        //                 console.log('set: ' + newValue);
+        //                 if(newValue === data[key]){
+        //                     return;
+        //                 }
+        //                 data[key] = newValue;
+        //                 // 数据更改，更新DOM的值
+        //                 document.getElementById('app').textContent = data[key];
+        //             }
+
+        //         });
+        //     });
+        // }
+
+        /*************************** Vue3.X 实现原理 ***************************/
+        // 基于Proxy对象
+
+        // 模拟Vue实例
+        // vm对象是data对象的代理对象，访问vm的成员就是访问data的成员，在其中加入数据劫持，做一些干预操作，比如数据变化就更新DOM内容
+        let vm = new Proxy(data,{
+            // 执行代理行为的函数
+
+            // 当访问vm的成员会执行
+            get:function(target,key){
+                console.log('get,key:'+ target[key]);
+                return target[key];
+            },
+
+            // 当设置vm的成员时会执行
+            set:function(target,key,newValue){
+                console.log('set,key:' + newValue);
+                if(target[key] === newValue){
+                    return
+                }
+                target[key] = newValue;
+                document.getElementById('app').textContent = target[key];
+            }
+        });
+
+
+    </script>
+    
+</body>
+</html>

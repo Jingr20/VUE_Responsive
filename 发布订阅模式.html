@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        /*
+        // ************************************ Vue自定义事件实现机制 ************************************
+
+        // Vue自定义事件
+
+        // 事件中心
+        let vm = new Vue();
+        // {'click':[fn1,fn2],'change':[fn]}
+
+        // 注册事件（订阅消息）
+        // 一个事件可以注册多个事件处理函数
+        vm.$on('dataChange',() => {
+            console.log('dataChange');
+        });
+
+        vm.$on('dataChange',() => {
+            console.log('dataChange1');
+        });
+
+        // 触发事件（发布消息）
+        vm.$emit('dataChange');
+
+        */
+
+        // ************************************ 模拟Vue自定义事件实现机制 ************************************
+        class EventEmitter{
+            constructor(){
+                // 构造函数里定义实例属性
+                // 定义一个对象，存储事件名和事件处理程序
+                this.subs = {};
+
+            }
+
+            // 原型方法
+            // 注册事件
+            $on(eventType,handler){
+                this.subs[eventType] = this.subs[eventType] || [];
+                this.subs[eventType].push(handler);
+            }
+
+            // 触发事件
+            $emit(eventType){
+                this.subs[eventType].forEach(handler => {
+                    handler();
+                });
+            }
+        }
+
+        // 测试
+        let em = new EventEmitter();
+        em.$on('click',() => {
+            console.log('click1');
+        });
+        em.$on('click',() => {
+            console.log('click2');
+        });
+        em.$emit('click');
+
+
+
+
+    </script>
+</body>
+</html>
